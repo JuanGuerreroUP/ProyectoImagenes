@@ -31,11 +31,14 @@ class Circle:
     def calcCenter(z):
         return pow(z,2)/(z*(z/2))
     def getEq():
+        createMat()
+        getDs()
+        getDc()
+        getDd()
+        getDe()
         self.c = self.dc/self.ds
         self.d = self.dd/self.ds
         self.e = self.de/self.ds
         self.center = [calcCenter(self.c),calcCenter(self.d)]
         self.radius = (-1*self.e)+(self.c/2)+(self.d/2)
-    def setCircle():#[x,y] input
-
-        return
+#    def setCircle(_p1, _p2, _p3):#[x,y] input

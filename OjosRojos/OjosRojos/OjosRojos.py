@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-import circleDetector
+from circleDetector import Circle
 
 #functions
 def gamma(img, gamma):
@@ -11,8 +11,14 @@ def gamma(img, gamma):
 
 #end of functions
 
+circulo = Circle();
+circulo.p1 = [5,8]
+circulo.p2 = [10,12]
+circulo.p3 = [3,15]
 
-img = cv2.imread("ojos-rojos.jpg")
+circulo.getEq()
+#
+img = cv2.imread("ojos-rojoss.jpg")
 
 tamanio = np.shape(img)
 print("y: ",tamanio[0])
