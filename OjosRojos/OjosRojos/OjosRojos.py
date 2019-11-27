@@ -16,9 +16,9 @@ circulo.p1 = [5,8]
 circulo.p2 = [10,12]
 circulo.p3 = [3,15]
 
-circulo.getEq()
+circulo.getEq
 #
-img = cv2.imread("ojos-rojoss.jpg")
+img = cv2.imread("red-eye0.jpg")
 
 tamanio = np.shape(img)
 print("y: ",tamanio[0])
@@ -31,21 +31,28 @@ imgChannels = [img[:,:,0], img[:,:,1], img[:,:,2]]
 #for i in range(3):
 #    imgChannels[i] = cv2.GaussianBlur(imgChannels[i],(3,3),2)
 #imgFinal = cv2.merge(imgChannels)
-imgChannels[2] = gamma(imgChannels[2],0.5)
-imgMerged = cv2.merge(imgChannels)
-imgGauss = cv2.GaussianBlur(imgMerged,(9,9),15)
+imgChannels[2] = gamma(imgChannels[2],0.8) #se aplica función gamma en el canal R (de BGR)
+
+imgMerged = cv2.merge(imgChannels) #se concatenan los tres canales con gamma en canal R
+
+imgGauss = cv2.GaussianBlur(imgMerged,(9,9),5) #se hace un blur a la imagen
+
 
 cv2.namedWindow("orignial", cv2.WINDOW_NORMAL)  
 cv2.imshow("orignial",img)
 
 cv2.namedWindow("gamma", cv2.WINDOW_NORMAL) 
 cv2.imshow("gamma",imgMerged)
+cv2.imshow("gamma-gauss",imgGauss)
 imgHSV = cv2.cvtColor(imgGauss, cv2.COLOR_BGR2HSV)
-lowerRed = np.array([0,60,30])
-upperRed = np.array([3,255,255])
 print(np.max(imgHSV[:,:,2]))
 #imgReds = np.zeros((tamanio[0],tamanio[1]))
-imgReds = (imgHSV[:,:,0]< 5) & (imgHSV[:,:,1] > 40) & (imgHSV[:,:,2] > 80)
+
+#imgReds = (imgHSV[:,:,0]<= 5) & (imgHSV[:,:,1] > 80) & (imgHSV[:,:,2] > 60)
+print("H max:", np.max(imgHSV[:,:,0]))
+imgReds = (imgHSV[:,:,0] <= 5) & (imgHSV[:,:,1] > 80) & (imgHSV[:,:,2] > 60)
+imgPinks = (imgHSV[:,:,0] >= 120) & (imgHSV[:,:,1] > 80) & (imgHSV[:,:,2] > 60)
+imgReds = imgReds + imgPinks
 imgReds = imgReds.astype(np.uint8)*255
 
 itera = 0
@@ -61,9 +68,13 @@ for y in range(0,tamanio[0],5):
 
     
 #imgReds = cv2.resize(imgReds, None, fx=0.5, fy=0.5,interpolation=cv2.INTER_CUBIC)
-cv2.namedWindow("reds", cv2.WINDOW_NORMAL)  
-cv2.imshow("reds",imgReds)
-mask = cv2.inRange(imgHSV, lowerRed, upperRed)
+cv2.Canny(imgReds, 100,100) #edge detection, cambiar a detector de sobel
+
+
+
+#cv2.namedWindow("reds", cv2.WINDOW_NORMAL)  
+cv2.imshow("reds", cv2.Canny(imgReds,100,100))
+#mask = cv2.inRange(imgHSV, lowerRed, upperRed)
 #cv2.imshow("mask",mask)
 
 cv2.waitKey(0)
