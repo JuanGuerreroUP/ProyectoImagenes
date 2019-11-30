@@ -4,6 +4,20 @@ import random
 import time
 from circleDetector import Circle
 
+#parameters:
+imageSource = "red-eye.jpg"
+
+minBrightness = 15
+numOfTests = 30
+successTolerance = 0.75
+circleToreranceDelta = 0.1
+outerCircTolerance =  0.025
+
+
+
+
+#end of parameters
+
 
 #functions
 def gamma(img, gamma):
@@ -16,16 +30,13 @@ def circunferencia(x,h,k,r):
     return int(pow(pow(r,2)-pow(x-h,2),0.5)+k)
 #end of functions
 
-img_original = cv2.imread("red-eye2.jpg")
+
+
+img_original = cv2.imread(imageSource)
 cv2.imshow("Original image", img_original)
 
 img = img_original
-#parameters:
-numOfTests = 30
-successTolerance = 0.75
-circleToreranceDelta = 0.1
-outerCircTolerance =  0.025
-#end of parameters
+
 
 
 tamanio = np.shape(img) #[y,x]
@@ -34,7 +45,7 @@ if(tamanio[0] > 800): #en caso de que la imagen sea muy grande, se escala propor
     img = cv2.resize(img, (800, int(tamanio[0]*800/tamanio[1])))
     tamanio = np.shape(img)
 if(tamanio[1] > 800):
-    img = cv2.resize(img, (int(tamanio[1]*800/tamanio[0])),800)
+    img = cv2.resize(img, ((int(tamanio[1]*800/tamanio[0])),800))
     tamanio = np.shape(img)
 
 print("y: ",tamanio[0])
@@ -60,8 +71,8 @@ imgHSV = cv2.cvtColor(imgGauss, cv2.COLOR_BGR2HSV)
 
 
 #H(0-180) S(0-100) V(0-100)
-imgReds = (imgHSV[:,:,0] <= 5) & (imgHSV[:,:,1] > 80) & (imgHSV[:,:,2] > 60) #se hace un threshold para los pixeles con hue correspondiente a un rojo con valores cercanos a 0°
-imgPinks = (imgHSV[:,:,0] >= 120) & (imgHSV[:,:,1] > 80) & (imgHSV[:,:,2] > 60)#se hace un threshold para los pixeles con hue correspondiente a un rojo con valores cercanos a 179°
+imgReds = (imgHSV[:,:,0] <= 5) & (imgHSV[:,:,1] > 80) & (imgHSV[:,:,2] > minBrightness) #se hace un threshold para los pixeles con hue correspondiente a un rojo con valores cercanos a 0°
+imgPinks = (imgHSV[:,:,0] >= 120) & (imgHSV[:,:,1] > 80) & (imgHSV[:,:,2] > minBrightness)#se hace un threshold para los pixeles con hue correspondiente a un rojo con valores cercanos a 179°
 imgReds = imgReds + imgPinks #se juntan los 2 umbrales para crear una mascara de las zonas de la imagen que tienen rojos
 
 imgEdges = cv2.Canny(imgReds.astype(np.uint8)*255, 100,100);#edge detection, crea una imagen con los bordes del umbral
