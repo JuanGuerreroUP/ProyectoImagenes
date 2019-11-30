@@ -78,8 +78,8 @@ for x in range(0,tamanio[1]):
         found = False
         if(imgEdges[y,x] == 255): 
             #se ejecuta cuando encuentra un pixel de un borde del umbral
-            tempCirc = Circle() #se crea un objeto Circle, el cual puede calcular las propiedades de un circulo dados tres puntos[x,y]
-            tempCirc.p1 = [x,y] #se asigna el primer pixel encontrado de un borde figura dentro del umbral
+            tempCirc = Circle([x,y]) #se crea un objeto Circle, el cual puede calcular las propiedades de un circulo dados tres puntos[x,y]
+                                     #y se pasa en el parametro del constructor el primer pixel encontrado de un borde figura dentro del umbral
             for x in range(tempCirc.p1[0]+1, tamanio[1]):
                 if not(imgReds[y,x]):
                     tempCirc.p2 = [x,y]
