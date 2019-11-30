@@ -83,7 +83,6 @@ justCirclesArea = np.zeros((tamanio[0],tamanio[1]),int).astype(np.uint8)
 
 
 cv2.imshow("redEdges", imgEdges) #muestra los bordes del umbral
-
 for x in range(0,tamanio[1]):
     for y in range(0, tamanio[0]):
         found = False
@@ -98,6 +97,7 @@ for x in range(0,tamanio[1]):
                     break; #se hace un sliding-window de 1x1 hacia la derecha, hasta que sale de la figura, y a ese punto se le asigna como el segundo punto de la circunferencia
                 found = False
             if(found):
+                found = False
                 x = int((tempCirc.p1[0]+tempCirc.p2[0])/2) # ahora se va a mover el eje x = (la mitad de los extremos)
                 if(x == tempCirc.p1[0]): continue #en caso de que el circulo detectado se de 2x2
                 for y in range(tempCirc.p1[1]+1, tamanio[0]):
