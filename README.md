@@ -12,4 +12,4 @@ El programa procesa las zonas de los ojos para quitar el efecto de los ojos rojo
 
 
 ## Algoritmo
-![algoritmo](https://raw.githubusercontent.com/JuanGuerreroUP/ProyectoImagenes/master/AlgoritmoOjosRojos.png?token=AMFMYLAGOJGFSKYABU5TBVS54IAPC)
+![algoritmoOjosRojos](https://raw.githubusercontent.com/JuanGuerreroUP/ProyectoImagenes/master/AlgoritmoOjosRojos.png)
