@@ -5,7 +5,7 @@ import time
 from circleDetector import Circle
 
 #parameters:
-imageSource = "red-eye6.jpg"
+imageSource = "testPhotos/red-eye6.jpg"
 
 minBrightness = 15
 numOfTests = 30
