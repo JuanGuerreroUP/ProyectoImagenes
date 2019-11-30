@@ -90,18 +90,22 @@ for x in range(0,tamanio[1]):
                     tempCirc.getEq()
                     imgEdgesCenters[tempCirc.center[1],tempCirc.center[0]] = 200
                     if(tempCirc.radius > (tamanio[0]+tamanio[1])/4): continue #en caso de que encuentre un circulo muy grande
+
+
                     successCount = 0
-                    numOfTests = 10
+                    numOfTests = 30
+                    successTolerance = 0.75;
+                    circleToreranceDelta = 0.1
                     tempRadius = int(tempCirc.radius*0.75)
                     minX = int(tempCirc.center[0] - tempRadius)
                     sizeX = tempRadius
-
+                    
                      #en caso de que se encuentre el posible circulo en un borde
                     if(minX < 0): minX = 0
                     if(tempCirc.center[0] + tempRadius > tamanio[1]): sizeX = tamanio[1]-minX-1
 
-                    for i in range(20):
-                        testX= random.randint(minX, minX+sizeX) #genera un numero aleatorio dentro del dominio de un circulo con la 3/4 del radio original
+                    for i in range(numOfTests):
+                        testX = int(minX + ((sizeX/numOfTests)*(i+1)))
                         testY = circunferencia(testX, tempCirc.center[0], tempCirc.center[1], tempRadius)
 
                         #en caso de que se encuentre el posible circulo en un borde
@@ -114,13 +118,18 @@ for x in range(0,tamanio[1]):
                             successCount +=1
 
                     tempRadius = int(tempCirc.radius*1.25)
-                    for i in range(20):
-                        testX= random.randint(int(tempCirc.center[0] - tempRadius), int(tempCirc.center[0] + tempRadius)) #genera un numero aleatorio dentro del dominio de un circulo con la 3/4 del radio original
+                    minX = int(tempCirc.center[0] - tempRadius)
+                    sizeX = tempRadius
+
+                     #en caso de que se encuentre el posible circulo en un borde
+                    if(minX < 0): minX = 0
+                    if(tempCirc.center[0] + tempRadius > tamanio[1]): sizeX = tamanio[1]-minX-1
+
+                    for i in range(numOfTests):
+                        testX = int(minX + ((sizeX/numOfTests)*(i+1)))
                         testY = circunferencia(testX, tempCirc.center[0], tempCirc.center[1], tempRadius)
 
                         #en caso de que se encuentre el posible circulo en un borde
-                        if(testX < 0): testX = 0
-                        if(testX >= tamanio[1]): testX = tamanio[1]-1
                         if(testY < 0): testY = 0
                         if(testY >= tamanio[0]): testY = tamanio[0]-1
 
@@ -128,11 +137,17 @@ for x in range(0,tamanio[1]):
                             successCount +=1
                         if not(imgReds[int(testY-tempRadius),testX]):
                             successCount +=1
-
-                    if(successCount > 65):
-                        justCirclesArea[int(tempCirc.center[1] - tempRadius):int(tempCirc.center[1] + tempRadius),int(tempCirc.center[0] - tempRadius):int(tempCirc.center[0] + tempRadius)] = 255
-                        imgEdges[int(tempCirc.center[1] - tempRadius):int(tempCirc.center[1] + tempRadius),int(tempCirc.center[0] - tempRadius):int(tempCirc.center[0] + tempRadius)] = 0
-                        justCircles[int(tempCirc.center[1] - tempRadius):int(tempCirc.center[1] + tempRadius),int(tempCirc.center[0] - tempRadius):int(tempCirc.center[0] + tempRadius)] = imgReds[int(tempCirc.center[1] - tempRadius):int(tempCirc.center[1] + tempRadius),int(tempCirc.center[0] - tempRadius):int(tempCirc.center[0] + tempRadius)]
+            
+                    if(successCount/(numOfTests*4) > successTolerance):
+                        tempBlock = imgReds[int(tempCirc.center[1] - tempRadius):int(tempCirc.center[1] + tempRadius),int(tempCirc.center[0] - tempRadius):int(tempCirc.center[0] + tempRadius)]
+                        tempBlock = tempBlock.astype(np.uint8)
+                        tempAvg =  cv2.mean(tempBlock)[0];
+                        cv2.circle(tempBlock,(tempRadius,tempRadius),tempCirc.radius,1,-1)
+                        tempAvg2 =  cv2.mean(tempBlock)[0];
+                        if(abs(tempAvg-tempAvg2) < circleToreranceDelta):
+                            justCirclesArea[int(tempCirc.center[1] - tempRadius):int(tempCirc.center[1] + tempRadius),int(tempCirc.center[0] - tempRadius):int(tempCirc.center[0] + tempRadius)] = 255
+                            imgEdges[int(tempCirc.center[1] - tempRadius):int(tempCirc.center[1] + tempRadius),int(tempCirc.center[0] - tempRadius):int(tempCirc.center[0] + tempRadius)] = 0
+                            justCircles[int(tempCirc.center[1] - tempRadius):int(tempCirc.center[1] + tempRadius),int(tempCirc.center[0] - tempRadius):int(tempCirc.center[0] + tempRadius)] = imgReds[int(tempCirc.center[1] - tempRadius):int(tempCirc.center[1] + tempRadius),int(tempCirc.center[0] - tempRadius):int(tempCirc.center[0] + tempRadius)]
 
 
 
