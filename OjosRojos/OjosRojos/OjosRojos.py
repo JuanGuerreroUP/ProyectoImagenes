@@ -5,7 +5,7 @@ import time
 from circleDetector import Circle
 
 #parameters:
-imageSource = "testPhotos/red-eye6.jpg"
+imageSource = "testPhotos/red-eye2.jpg"
 
 minBrightness = 15
 numOfTests = 30
@@ -65,8 +65,8 @@ imgGauss = cv2.GaussianBlur(imgMerged,(9,9),5) #se hace un blur a la imagen para
 
 
 
-cv2.imshow("gamma",imgMerged)
-cv2.imshow("gamma-gauss",imgGauss)
+#cv2.imshow("gamma",imgMerged)
+#cv2.imshow("gamma-gauss",imgGauss)
 imgHSV = cv2.cvtColor(imgGauss, cv2.COLOR_BGR2HSV)
 
 
@@ -82,11 +82,11 @@ justCircles = np.zeros((tamanio[0],tamanio[1]),int).astype(np.uint8)
 justCirclesArea = np.zeros((tamanio[0],tamanio[1]),int).astype(np.uint8)
 
 
-cv2.imshow("redEdges", imgEdges) #muestra los bordes del umbral
+#cv2.imshow("redEdges", imgEdges) #muestra los bordes del umbral
 for x in range(0,tamanio[1]):
     for y in range(0, tamanio[0]):
         found = False
-        if(imgEdges[y,x] == 255): 
+        if(imgEdges[y,x] == 255):
             #se ejecuta cuando encuentra un pixel de un borde del umbral
             tempCirc = Circle([x,y]) #se crea un objeto Circle, el cual puede calcular las propiedades de un circulo dados tres puntos[x,y]
                                      #y se pasa en el parametro del constructor el primer pixel encontrado de un borde figura dentro del umbral
@@ -112,11 +112,11 @@ for x in range(0,tamanio[1]):
 
 
                     successCount = 0 #contador que ayuda a calificar que tanto se parece la figura a un circulo
-                    
+
                     tempRadius = int(tempCirc.radius*0.75) #reduce el radio del posible circulo para comprobar valores dentro del circulo, los cuales deben valer 1
                     minX = int(tempCirc.center[0] - tempRadius)
                     sizeX = tempRadius
-                    
+
                      #en caso de que se encuentre en un borde el posible circulo
                     if(minX < 0): minX = 0
                     if(tempCirc.center[0] + tempRadius > tamanio[1]): sizeX = tamanio[1]-minX-1
@@ -142,7 +142,7 @@ for x in range(0,tamanio[1]):
                     if(minX < 0): minX = 0
                     if(tempCirc.center[0] + tempRadius > tamanio[1]): sizeX = tamanio[1]-minX-1
                     for i in range(numOfTests):
-                        testX = int(minX + ((sizeX/numOfTests)*(i+1))) # se fracciona en puntos del eje x que esten dentro del dominio del posible circulo 
+                        testX = int(minX + ((sizeX/numOfTests)*(i+1))) # se fracciona en puntos del eje x que esten dentro del dominio del posible circulo
                         testY = circunferencia(testX, tempCirc.center[0], tempCirc.center[1], tempRadius) #se obtiene su posición en y, de acuerdo con la funcion de una circunferencia
 
                         #en caso de que se encuentre en un borde el posible circulo
@@ -153,7 +153,7 @@ for x in range(0,tamanio[1]):
                             successCount +=1 #la imagen del umbral tiene un pixel con valor de 0 fuera de lo que corresponde al posible circulo en la parte superior
                         if not(imgReds[int(testY-tempRadius),testX]): #propiedad de simetria de una circunferencia
                             successCount +=1 #la imagen del umbral tiene un pixel con valor de 0 fuera de lo que corresponde al posible circulo en la parte inferior
-            
+
                     if(successCount/(numOfTests*4) > successTolerance):
                         posibleCircleBlocks[int(tempCirc.center[1] - tempRadius):int(tempCirc.center[1] + tempRadius),int(tempCirc.center[0] - tempRadius):int(tempCirc.center[0] + tempRadius)] = 255
                         tempBlock = imgReds[int(tempCirc.center[1] - tempRadius):int(tempCirc.center[1] + tempRadius),int(tempCirc.center[0] - tempRadius):int(tempCirc.center[0] + tempRadius)]
@@ -173,13 +173,13 @@ for x in range(0,tamanio[1]):
 
 
 
-cv2.imshow("posible circle Area", posibleCircleBlocks) #solo para mostrar las zonas donde hubieron figuras con borde similar a una circunferencia
-cv2.imshow("circle Area", justCirclesArea) #solo para mostrar las zonas donde detecto circulos
-cv2.imshow("isolated circles", justCircles*255) #una matriz boolanea donde se aislan todos los circulos rojos del resto de la imagen
+#cv2.imshow("posible circle Area", posibleCircleBlocks) #solo para mostrar las zonas donde hubieron figuras con borde similar a una circunferencia
+#cv2.imshow("circle Area", justCirclesArea) #solo para mostrar las zonas donde detecto circulos
+#cv2.imshow("isolated circles", justCircles*255) #una matriz boolanea donde se aislan todos los circulos rojos del resto de la imagen
 
 #se añade un blur a la imagen para que los cambios de color no sean tan abruptos y se rescala la imagen al tamaño original
 bluryCircles = cv2.GaussianBlur(cv2.resize(justCircles*1.0,(tamanio_original[1],tamanio_original[0])),(21,21),2) # *1.0 para hacerlo float y que el blur sea entre 0 y 1
-cv2.imshow("blury circles", bluryCircles)
+#cv2.imshow("blury circles", bluryCircles)
 
 imgHSV_original = cv2.cvtColor(img_original, cv2.COLOR_BGR2HSV) #convierte la imagen original (sin ninguna operación) a HSV para modificar las tonalidades de los ojos
 
@@ -189,12 +189,10 @@ imgHSV_original[:,:,1] = imgHSV_original[:,:,1]*(1-(bluryCircles*0.9)) #vuelve l
 imgHSV_original[:,:,2] = imgHSV_original[:,:,2]*(1-(bluryCircles*0.8)) #oscurece la zona de los ojos
 finalImg = cv2.cvtColor(imgHSV_original,cv2.COLOR_HSV2BGR)
 
-#cv2.namedWindow("Final image", cv2.WINDOW_NORMAL)  
+#cv2.namedWindow("Final image", cv2.WINDOW_NORMAL)
 cv2.imshow("Final image", finalImg.astype(np.uint8))
 
 
 
 cv2.imwrite("result.jpg",finalImg)
 cv2.waitKey(0)
-
-
